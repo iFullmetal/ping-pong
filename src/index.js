@@ -2,7 +2,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const path = require('path')
 const http = require('http')
-const { addPlayer, getPlayer, removePlayer, updateRooms } = require('./utils/players')
+const { addPlayer, getPlayer, removePlayer, updateRooms, dimensions } = require('./utils/players')
 
 const app = express()
 const server = http.createServer(app)
@@ -23,6 +23,9 @@ io.on('connection', (socket)=>{
         }
         socket.join(roomName)
 
+        //отправляю сокету статические параметры игры
+        socket.emit('gameDimensions', dimensions)
+        
         callback()
     })
 
