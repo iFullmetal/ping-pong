@@ -3,7 +3,6 @@ const socket = io()
 const { room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 let dimensions
 let gotDimensions = false
-let joins = 0
 socket.emit('join', room, (error) => {
     if(error){
         location.href = '/error.html'

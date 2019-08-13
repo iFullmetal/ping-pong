@@ -29,9 +29,8 @@ io.on('connection', (socket)=>{
         callback()
     })
 
-    socket.on('keyPressed', (key)=>{
-        const player = getPlayer(socket.id);
-        player.move(key)
+    socket.on('keyPressed', (dir)=>{
+        getPlayer(socket.id).move(dir)
     })
 
     socket.on('disconnect', ()=>{
