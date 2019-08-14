@@ -48,7 +48,7 @@ setInterval(()=>{
     updateRooms((room)=>{
         io.to(room.roomName).emit('update', room)
     })
-}, 20)
+}, 5)
 
 server.listen(port, ()=>{
     console.log('Server is up on port', port)

@@ -1,46 +1,32 @@
 //пересечение прямоугольника с кругом
-const circleBox = require('intersects/circle-box');
+//const circleBox = require('intersects/circle-box');
 const dimensions = require('./dimensions.js')
 const random = require('random')
 
-function randomNumber(min, max, except) {
-    let value
-    do{
-        value = Math.floor(min + Math.random() * (max + 1 - min)) + min;
-    }while(except !== undefined && value === except)
-    return value
-}
+function circleBox(xc, yc, rc, xb, yb, wb, hb)
+{
+    var hw = wb / 2
+    var hh = hb / 2
+    var distX = Math.abs(xc - (xb + wb / 2))
+    var distY = Math.abs(yc - (yb + hb / 2))
 
-
-function intersects(ball, rect){
-    const circle = ball.ballRect
-    const circleDistance = { x: Math.abs(circle.x - rect.x), y: Math.abs(circle.y - rect.y) }
-
-    if (circleDistance.x > (rect.width/2 + circle.r)){ 
-        return false;
-    }
-    if (circleDistance.y > (rect.height/2 + circle.r)){
-         return false; 
+    if (distX > hw + rc || distY > hh + rc)
+    {
+        return false
     }
 
-    if (circleDistance.x <= (rect.width/2)){
-        ball.dirX *= -1
-        //return true;
-    } 
-    if (circleDistance.y <= (rect.height/2)){
-        ball.dirX *= -1
-        //return true; 
+    if (distX <= hw || distY <= hh)
+    {
+        return 1
     }
 
-    const cornerDistance_sq = Math.pow((circleDistance.x - rect.width/2),2) +
-                     Math.pow((circleDistance.y - rect.height/2),2);
-
-
-    if(cornerDistance_sq <= Math.pow(circle.r,2)){
-        ball.dirX *= -1
-        //ball.dirY *= -1
-        //return true
+    var x = distX - hw
+    var y = distY - hh
+    if(x * x + y * y <= rc * rc)
+    {
+        return 2
     }
+    else return false
 }
 
 function Ball(){
@@ -51,7 +37,7 @@ function Ball(){
     }
     this.dirX = random.int(0, 1)? 1 : -1
     this.dirY = random.int(0, 1)? 1 : -1
-    this.speed = 1
+    this.speed = 0.3
 
     this.move = function(){
         this.ballRect.x += this.dirX * this.speed
@@ -62,11 +48,14 @@ function Ball(){
         this.move()
 
         for(let i = 0; i < players.length; i++){
-
-            if(circleBox(this.ballRect.x, this.ballRect.y, this.ballRect.r, players[i].x, players[i].y, dimensions.playerWidth, dimensions.playerHeight )){
+            const intersection = circleBox(this.ballRect.x, this.ballRect.y, this.ballRect.r, players[i].x, players[i].y, dimensions.playerWidth, dimensions.playerHeight )
+            if(intersection === 1){
                 this.dirX *= -1
             }
-            //intersects(this, { x: players[i].x, y: players[i].y, width: dimensions.playerWidth, height: dimensions.playerHeight })
+            if(intersection === 2){
+                this.dirX *= -1
+                this.dirY *= -1
+            }
         }
         if(this.ballRect.y <= 0 || this.ballRect.y + this.ballRect.r*2 >= dimensions.virtualHeight ){
             this.dirY *= -1

@@ -36,7 +36,7 @@ socket.on('logMessage', (message)=>{
 
 socket.on('update', (room)=>{
     if(!gotDimensions) return
-    console.log(room)
+    //console.log(room)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = "blue"
     ctx.fillRect(room.players[0].x * scaleX, room.players[0].y * scaleY, player1ScaledDimention.width, player1ScaledDimention.height)
