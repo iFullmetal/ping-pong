@@ -8,8 +8,14 @@ function Player(id, y, x){
     this.x = x
     this.speed = 3
     this.score = 0
-    this.move = (dir)=>{
-        const offset = this.speed * dir
+    this.move = ({ dir, key })=>{
+        let offset
+        if(key){
+             offset = this.speed * (key==='w'?-1 : 1)
+        }
+        else{
+            offset = (dir * -1)/5
+        }
         if(this.y + offset < 0 || this.y + offset + dimensions.playerHeight > dimensions.virtualHeight) {
             return
         }
