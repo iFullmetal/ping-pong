@@ -37,7 +37,7 @@ function Ball(){
     }
     this.dirX = random.int(0, 1)? 1 : -1
     this.dirY = random.int(0, 1)? 1 : -1
-    this.speed = 0.3
+    this.speed = 1
 
     this.move = function(){
         this.ballRect.x += this.dirX * this.speed
