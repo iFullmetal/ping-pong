@@ -3,10 +3,16 @@ const socket = io()
 const { room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
 let dimensions
 let gotDimensions = false
-socket.emit('join', room, (error) => {
-    if(error){
-        location.href = '/error.html'
-    }
+
+socket.emit('join', room, (response) => {
+    console.log(response)
+        if(response.error){
+            location.href = '/error.html'
+        }
+
+        if(response.redirectToRoom){
+            location.href = `/?room=${response.redirectToRoom}`
+    } 
 })
 
 socket.on('gameDimensions', (dimensions_)=>{

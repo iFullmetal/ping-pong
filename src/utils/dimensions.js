@@ -4,7 +4,7 @@ const dimensions = {
     playerWidth: 10,
     playerHeight: 30,
 }
-dimensions.player1_x = dimensions.playerWidth/2,
-dimensions.player2_x = dimensions.virtualWidth - (dimensions.playerWidth + dimensions.playerWidth/2)
+dimensions.player1_x = 10
+dimensions.player2_x = 150
 dimensions.ballR = 5
 module.exports = dimensions

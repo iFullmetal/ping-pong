@@ -2,7 +2,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const path = require('path')
 const http = require('http')
-const { addPlayer, getPlayer, removePlayer, updateRooms, dimensions } = require('./utils/players')
+const { addPlayer, getPlayer, removePlayer, updateRooms, dimensions, findFreeRoom } = require('./utils/players')
 
 const app = express()
 const server = http.createServer(app)
@@ -16,9 +16,14 @@ io.on('connection', (socket)=>{
     console.log(`websocket: ${socket.id} is connected.`)
 
     socket.on('join', (roomName, callback)=>{
+        console.log(roomName)
+        if(!roomName){
+            callback({ redirectToRoom: findFreeRoom().roomName })
+            return
+        }
         const error = addPlayer(socket.id, roomName)
         if(error){
-            callback(error)
+            callback({ error })
             return
         }
         socket.join(roomName)
@@ -26,7 +31,7 @@ io.on('connection', (socket)=>{
         //отправляю сокету статические параметры игры
         socket.emit('gameDimensions', dimensions)
         
-        callback()
+        callback({})
     })
 
     socket.on('keyPressed', (dir)=>{
@@ -34,6 +39,7 @@ io.on('connection', (socket)=>{
     })
 
     socket.on('disconnect', ()=>{
+        console.log('disconnect')
         removePlayer(socket.id)
     })
 })

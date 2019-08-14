@@ -3,7 +3,7 @@ let scaleY, scaleX;
 const player1ScaledDimention = {}
 const player2ScaledDimention = {}
 const ballScaledSize = {}
-
+const scorePos = {}
 const calculateDimentions = ()=>{
     //масштабирую канвас под размеры окна
     canvas.width = document.documentElement.clientWidth - document.documentElement.clientWidth/10
@@ -17,7 +17,8 @@ const calculateDimentions = ()=>{
     player1ScaledDimention.height = player2ScaledDimention.height = dimensions.playerHeight * scaleY
     ballScaledSize.width = dimensions.ballR * scaleX
     ballScaledSize.height = dimensions.ballR * scaleY
-    console.log(ballScaledSize)
+    scorePos.x = canvas.width/2
+    scorePos.y = canvas.height/11
 }
 
 document.body.insertBefore(canvas, document.body.childNodes[0]);
@@ -35,59 +36,31 @@ socket.on('logMessage', (message)=>{
 
 socket.on('update', (room)=>{
     if(!gotDimensions) return
-
+    console.log(room)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = "blue"
-    ctx.fillRect(player1ScaledDimention.x, room.players[0].y * scaleY, player1ScaledDimention.width, player1ScaledDimention.height)
+    ctx.fillRect(room.players[0].x * scaleX, room.players[0].y * scaleY, player1ScaledDimention.width, player1ScaledDimention.height)
     if(!room.players[1]) return
     ctx.fillStyle = "red"
-    ctx.fillRect(player2ScaledDimention.x, room.players[1].y * scaleY, player2ScaledDimention.width, player2ScaledDimention.height)
+    ctx.fillRect(room.players[1].x * scaleX, room.players[1].y * scaleY, player2ScaledDimention.width, player2ScaledDimention.height)
     ctx.fillStyle = "black"
-    ctx.fillRect(room.ball.ballRect.x * scaleX, room.ball.ballRect.y * scaleY, room.ball.ballRect.r * 2 * scaleX, room.ball.ballRect.r * 2 * scaleY)
-    //drawEllipse(ctx, room.ball.ballRect.x * scaleX, room.ball.ballRect.y * scaleY, ballScaledSize.width, ballScaledSize.height)
-    // ctx.beginPath();
-    // ctx.arc(room.ball.ballRect.x, room.ball.ballRect.y, ballScaledSize.width, ballScaledSize.width, 2 * Math.PI);
-    // ctx.stroke();
-
+    drawEllipse(ctx, room.ball.ballRect.x * scaleX /*+ ballScaledSize.width*/, room.ball.ballRect.y * scaleY /*+ ballScaledSize.height*/, ballScaledSize.width, ballScaledSize.height)
+    ctx.font = `${4 * scaleX}px Arial`;
+    ctx.fillText(room.players[0].score + ' | ' + room.players[1].score, scorePos.x, scorePos.y);
 })
 
-// socket.on('update', (room)=>{
-//     if(!gotDimensions) return
-
-//     ctx.clearRect(0, 0, canvas.width, canvas.height)
-//     ctx.fillStyle = "blue"
-//     ctx.fillRect(room.players[0].x, room.players[0].y, dimensions.playerWidth, dimensions.playerHeight)
-//     if(!room.players[1]) return
-//     ctx.fillStyle = "red"
-//     ctx.fillRect(room.players[1].x, room.players[1].y, dimensions.playerWidth, dimensions.playerHeight)
-//     ctx.fillStyle = "black"
-//     ctx.fillRect(room.ball.ballRect.x , room.ball.ballRect.y, room.ball.ballRect.r * 2, room.ball.ballRect.r * 2)
-
-// })
-
-
 function drawEllipse(ctx, x, y, a, b) {
-    // Запоминаем положение системы координат (CК) и масштаб
    ctx.save();
    ctx.beginPath();
-  
-   // Переносим СК в центр будущего эллипса
+
    ctx.translate(x, y);
-  
-   /*
-    * Масштабируем по х.
-    * Теперь нарисованная окружность вытянется в a / b раз
-    * и станет эллипсом
-    */
-  
    ctx.scale(a / b, 1);
-  
-   // Рисуем окружность, которая благодаря масштабированию станет эллипсом
+   ctx.strokeStyle = 'black';
+
    ctx.arc(0, 0, b, 0, Math.PI * 2, true);
   
-   // Восстанавливаем СК и масштаб
+
    ctx.restore();
-  
    ctx.closePath();
    ctx.stroke();
  }
