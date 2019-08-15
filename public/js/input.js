@@ -7,7 +7,6 @@ document.addEventListener('keydown', (event)=>{
     }
 })
 let lastY;
-let lastUpdate = Date.now()
 window.onmousemove = (event)=>{
     if(event.buttons === 1){
         if(lastY != event.y){
@@ -15,4 +14,9 @@ window.onmousemove = (event)=>{
             lastY = event.y
         }
     }
+}
+
+window.ontouchmove = (event)=>{
+    socket.emit('keyPressed', { dir: lastY - event.touches[0].clientY })
+    lastY = event.touches[0].clientY
 }

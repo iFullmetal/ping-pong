@@ -15,9 +15,12 @@ function circleBox(xc, yc, rc, xb, yb, wb, hb)
         return false
     }
 
-    if (distX <= hw || distY <= hh)
+    if (distX <= hw /*|| distY <= hh*/)
     {
         return 1
+    }
+    if(distY <= hh){
+        return 3
     }
 
     var x = distX - hw
@@ -53,6 +56,10 @@ function Ball(){
                 this.dirX *= -1
             }
             if(intersection === 2){
+                this.dirX *= -1
+                this.dirY *= -1
+            }
+            if(intersection===3){
                 this.dirX *= -1
                 this.dirY *= -1
             }
